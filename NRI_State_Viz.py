@@ -20,17 +20,14 @@ import plotly
 import streamlit as st
 
 #Writing dashboard title 
-st.title("Comparing Natural Disaster and Climate Risk across California, Florida, Texas, and New York")
-
-#Adding in authors name 
-st.subheader('Ellis Obrien')
+st.title("Evaluating Natural Disaster and Climate Risk in California, Florida, Texas, and New York")
 
 #Adding text describing issue 
-'Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone, natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks.'
+st.write('Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks.')
 
-'This dashboard uses NRI data to analyze and visualize climate risk in four states: California, Florida, New York and Texas. These states represent the four most populous states in the country and the four states with over 2 trillion dollars in building value. Additionally, California, Texas, and Florida represent the three states with the highest expected annual loss due to climate change. Analyzing these states allows us to see the risk profile of four distinct regions in the country.'
+st.write('This dashboard uses NRI data to analyze and visualize climate risk in four states: California, Florida, New York and Texas. These states represent the four most populous states in the country and the four states with over 2 trillion dollars in building value. Additionally, California, Texas, and Florida represent the three states with the highest expected annual loss due to climate change. Analyzing these states allows us to see the risk profile of four distinct regions in the country.')
 
-'This tool is intended for federal, state, and local policy makers, who may use it to gain a better understanding of geospatial risk in their state. Additionally, it can be used by perspective property owners seeking to understand the risk to the climate risk associated with their properties.'
+st.write('This tool is intended for federal, state, and local policy makers, who may use it to gain a better understanding of geospatial risk in their state. However, it can be used by anyone, for example a perspective property buyer seeking to understand the climate risk associated with their future properties.')
 
 
 #imporing json 
@@ -49,7 +46,7 @@ NRI.rename(columns={'STCOFIPS':'FIPS'}, inplace=True)
 #section 1
 ##############################################################################
 st.header('Overview of Loss by State and County Risk')
-st.write("This section provides a high level understanding of loss and risk across for each state analyzed.")
+st.write("This section provides a high level understanding of loss and risk for each state analyzed.")
 
 
 
@@ -80,7 +77,7 @@ fig0.update_layout(title_text = '<b>Figure 1: State Level Loss Broken Down by Lo
 st.plotly_chart(fig0)
 
 
-st.caption('Buildings are primary driver of loss when dealing with natural disasters. While agricultural loss is not as financially damaging, food systems could be strained as climate change intensifies. In this dataset population is defined as the injury or loss of life from natural disasters converted to dollar terms. It is interesting that California leads in building and agricultural loss, but Texas has the largest population loss by a significant margin.')
+st.caption('Buildings are the primary driver of loss from natural disasters. While agricultural loss is not as financially damaging, food systems could be strained as climate change intensifies. In this dataset population is defined as the injury or loss of life from natural disasters converted to dollar terms. It is interesting that California leads in building and agricultural loss, but Texas has the largest population loss by a significant margin.')
 
 
 st.text("")
@@ -97,7 +94,7 @@ st.write('Select a state from the drop down below to view county level loss and 
 State_Name1=st.selectbox(label="Select State to View",
 options=('CA', 'FL', 'NY', 'TX' ))
 
-st.write('Figure 2 below shows annual expected loss by county, while figure 3 shows the composite risk score. You can hover over the counties on the map to see the specific loss/risk for the given county.')
+st.write('Figure 2 below shows annual expected loss by county, while figure 3 shows the composite risk score. Hover your cursor over the counties on the map to see the specific loss/risk for the given county.')
 title_text = "**" + State_Name1 + "**"
 
 st.text("")
@@ -133,7 +130,6 @@ elif State_Name1 == 'TX':
 
 NRI_MAP1=NRI[NRI.STATEABBRV == State_Name1]
 
-NRI_MAP1
 
 #initilizing mapping function 
 def county_map_1(input_var, map_leg, z, input_desc):
@@ -163,7 +159,7 @@ NRI_description2='Annual Expected Loss'
 
 county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 
-st.caption('Losses are heavily influenced by two factors peril frequency/intensity and population. It is important to remember that population is highly correlated with loss since their tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade and Los Angeles county are high risk regions the reason they have such high losses is due to population. Still, it is important for policy makers to review total loss numbers because this where a significant portion of climate resources will need to be allocated.')
+st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. It is important to remember that population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade and Los Angeles county are high risk regions, the reason they have such high losses is due to population. It is important for policy makers to review state total loss numbers because this where a significant portion of climate resources will need to be allocated.')
 
 st.caption('_*Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
 
@@ -200,9 +196,12 @@ st.text("")
 
 st.text("")
 
-st.header('Analysis of Peril Specific Loss by State ')
-st.write('While section one was intended to provide a high level overview of climate risk, this section breaks down which perils specifically threaten selected states.')
+st.header('Analysis of Peril-Specific Loss by State ')
+st.write('Section one was intended to provide a high level overview of climate risk. This section identifies the primary perils for each state.')
 
+st.text("")
+
+st.text("")
 
 st.write('Select a state from the dropdown below to see which perils drive losses in the state.')
 State_Name2=st.selectbox(label="Select State",
@@ -375,25 +374,41 @@ pyup5=pyup4
 
 
 Map_Range3 = st.slider(
-    'Edit Map Range',
+    'Edit Map Range (Map range values are in Dollars)',
     0.0, pyup5, pyup5, step = 10000.0)
 
 st.write('**Figure 5: County Level**', title_text3, '**Expected Loss for**', title_text2)
+st.caption('Geographic Region Determine Peril Vulnerability by State')
 
 county_map_2(variable1, (0, Map_Range3 ), zoom)
 st.caption('Most states are only threatened by a few perils with virtually no risk from other types of disasters. For example, while California has the highest annual expected loss in the country it has virtually no hurricane risk due to cold waters in the Pacific Ocean.')
+
+
+st.text("")
+
+st.text("")
+
+st.text("")
 
 ##############################################################################
 #section 3
 ##############################################################################
 st.subheader('County Level Correlations with Loss')
 
+st.write("This section provides an overview of the correlations between expected loss and key exposure and risk metrics. Exposure (i.e building value, population) and risk (i.e. risk score and social vulnerability) are what dictate losses so it is interesting to see corelations between loss and these factors. Each dot on the below charts represent a county colored by the state the county falls in. While it may be hard to see low loss counties on these graphs, this section is useful for indentifying high risk/high loss outliers.")
+
+st.text("")
+
+st.text("")
+
+st.text("")
+
 NRI_Scatter=NRI[['COUNTY','STATEABBRV', 'BUILDVALUE', 'POPULATION', 'AGRIVALUE', 'RISK_SCORE', 'SOVI_SCORE', 'RESL_SCORE', 'EAL_VALT']]
 
 NRI_Scatter.rename(columns={'STATEABBRV': 'State',
-                    'BUILDVALUE': 'Building Value',
+                    'BUILDVALUE': 'Building Value ($)',
                    'POPULATION': 'Population',
-                   'AGRIVALUE': 'Agricultural Value',
+                   'AGRIVALUE': 'Agricultural Value ($)',
                    'RISK_SCORE': 'Risk Score',
                    'SOVI_SCORE': 'Social Vulnerability',
                    'RESL_SCORE': 'Community Resilience',
@@ -403,17 +418,18 @@ NRI_Scatter.rename(columns={'STATEABBRV': 'State',
 
 #Enter X variable and Description 
 x_value='Expected Annual Loss'
-x_description='<b>Annual Expected Loss by County</b>'
+x_description='Annual Expected Loss by County ($)'
 
 st.write('**Examining Relationship Between Loss and Exposure**')
+st.write('Select an exposure metric from the drop down below to see how it is correlated with loss. Additionally, you can adjust the slider to alter the y or x axis. The slider slides from the minimum and maximum possible value for each axis.')
 #Enter Y Variable and Description
 y_value=st.selectbox(label="Select Variable",
-options=("Building Value",
+options=("Building Value ($)",
 'Population',
-'Agricultural Value'))
+'Agricultural Value ($)'))
 
 NRI_Scatter["Population"] = NRI_Scatter["Population"].astype(float)
-NRI_Scatter["Agricultural Value"] = NRI_Scatter["Agricultural Value"].astype(float)
+NRI_Scatter["Agricultural Value ($)"] = NRI_Scatter["Agricultural Value ($)"].astype(float)
 
 
 upper_bound_draft5=NRI_Scatter[[y_value]].max()
@@ -422,12 +438,21 @@ up5=upper_bound_draft5[0]
 pyup5 = up5.item()
 
 Map_Range4 = st.slider(
-    'Edit Y Axis',
+    'Edit Y-Axis',
     0.0, pyup5, pyup5*.5, step = 100000.0)
+
+upper_bound_draft6=NRI_Scatter[[x_value]].max()
+up6=upper_bound_draft6[0]
+
+pyup6 = up6.item()
+
+Map_Range5 = st.slider(
+    'Edit X-Axis, Expected Loss ($)',
+    0.0, pyup6, pyup6*.2, step = 100000.0)
 
 #data pre-processing 
 #defining function 
-def scatter_plot(x_value, y_value, y_range):
+def scatter_plot(x_value, y_value, y_range, x_range):
     fig4 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
                      color='State',
                      size_max=15,
@@ -436,29 +461,47 @@ def scatter_plot(x_value, y_value, y_range):
                      x_value:x_description,
                     
                  },  template="simple_white")
-    fig4.update_layout(transition_duration=500,  xaxis_range=[0, 250000000], yaxis_range=y_range)
+    fig4.update_layout(title_text = '<b>Figure 6: Relationship between Expected Loss and Exposure </b> <br><sup> All Types of Exposure are Highly Correlated with Loss </sup>', transition_duration=500,  xaxis_range=x_range, yaxis_range=y_range)
     st.plotly_chart(fig4)    
 
 
-st.write('**Figure 6: Relationship between Expected Loss and Exposure**')
 
 #running function 
-scatter_plot(x_value, y_value, (0, Map_Range4))
+scatter_plot(x_value, y_value, (0, Map_Range4), (0, Map_Range5))
 
+st.caption('Building Value and Population tend to be highly correlated with loss. But this patter is as strong across all states. In New York for example, there are many high loss high population counties that have low relative loss.')
+st.text("")
+
+st.text("")
+
+st.text("")
 
 
 st.write('**Examining Relationship Between Loss and Risk Metrics**')
-
+st.write('')
 y_value2=st.selectbox(label="Select Risk Variable",
 options=('Risk Score',
 'Social Vulnerability',
 'Community Resilience'))
 
-st.write('**Figure 7: Relationship between Expected Loss and Exposure**')
+
+
+x_value2='Expected Annual Loss'
+
+upper_bound_draft7=NRI_Scatter[[x_value2]].max()
+up7=upper_bound_draft7[0]
+
+pyup7 = up7.item()
+
+Map_Range6 = st.slider(
+    'Edit X-Axis, Expected Loss ($)',
+    0.0, pyup7, pyup7*.2, step = 100000.00, key=9)
+
+
 
 #data pre-processing 
 #defining function 
-def scatter_plot2(x_value, y_value):
+def scatter_plot2(x_value, y_value, map_range):
     fig5 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
                      color='State',
                      size_max=15,
@@ -467,11 +510,16 @@ def scatter_plot2(x_value, y_value):
                      x_value:x_description,
                     
                  },  template="simple_white")
-    fig5.update_layout(transition_duration=500,  xaxis_range=[0, 250000000])
+    fig5.update_layout(title_text = '<b>Figure 7: Relationship between Expected Loss and Exposure </b> <br><sup> Risk and Loss are Highly Correlated </sup>', transition_duration=500,  xaxis_range=map_range)
     st.plotly_chart(fig5)
 
-scatter_plot2(x_value, y_value2)
+scatter_plot2(x_value2, y_value2, (0, Map_Range6))
 
+st.caption('According to FEMA Risk Scoare and social vulnerability should be highly correlated with loss, while community resilience should be negativley correlated with loss. We see a strong positive correlation between risk and loss, but the relation between vulnerability and resilience is weaker.')
+
+
+#Adding in authors name 
+st.markdown('_For use and support contact Ellis Obrien: eso18@georgetown.edu_')
 
 
 
