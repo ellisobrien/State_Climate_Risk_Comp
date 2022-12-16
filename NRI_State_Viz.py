@@ -63,8 +63,6 @@ nri_plot_1.reset_index(inplace=True)
 nri_plot_1=nri_plot_1.sort_values(by=['EAL_VALB'], ascending=False)
 
 
-
-
 nri_plot_1.rename(columns={'EAL_VALB': 'Building Loss',
                          'EAL_VALA': 'Agricultural Loss',
                          'EAL_VALPE': 'Population Loss'},
@@ -135,6 +133,7 @@ elif State_Name1 == 'TX':
 
 NRI_MAP1=NRI[NRI.STATEABBRV == State_Name1]
 
+NRI_MAP1
 
 #initilizing mapping function 
 def county_map_1(input_var, map_leg, z, input_desc):
@@ -144,7 +143,8 @@ def county_map_1(input_var, map_leg, z, input_desc):
                                    mapbox_style="carto-positron",
                                    zoom=z, center = {"lat": x, "lon": y},
                                    opacity=0.7,
-                                   labels={input_var: input_desc, 'STCOFIPS':'FIPS'}
+                                   hover_name="COUNTY", hover_data=["SOVI_RATNG", "RESL_RATNG"],
+                                   labels={input_var: input_desc, 'STCOFIPS':'FIPS', 'SOVI_RATNG':'Social Vulnerability', 'RESL_RATNG':'Resilience'}
                                   )
     fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, geo_scope='usa')
     st.plotly_chart(fig1)
@@ -214,7 +214,7 @@ NRI_Map2=NRI[NRI.STATEABBRV == State_Name2]
 
 NRI_Map2 = NRI_Map2.fillna(0)
 
-NRI_Map2=NRI_Map2[['FIPS', 'AVLN_EALT',
+NRI_Map2=NRI_Map2[['FIPS', 'COUNTY', 'AVLN_EALT',
 'CFLD_EALT',
 'CWAV_EALT',
 'DRGT_EALT',
@@ -358,6 +358,7 @@ def county_map_2(input_var, map_leg, z):
                                    mapbox_style="carto-positron",
                                    zoom=z, center = {"lat": x2, "lon": y2},
                                    opacity=0.7,
+                                   hover_name="COUNTY",
                                    labels={'STCOFIPS':'FIPS'}
                                   )
     fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, geo_scope='usa')
@@ -387,7 +388,7 @@ st.caption('Most states are only threatened by a few perils with virtually no ri
 ##############################################################################
 st.subheader('County Level Correlations with Loss')
 
-NRI_Scatter=NRI[['STATEABBRV', 'BUILDVALUE', 'POPULATION', 'AGRIVALUE', 'RISK_SCORE', 'SOVI_SCORE', 'RESL_SCORE', 'EAL_VALT']]
+NRI_Scatter=NRI[['COUNTY','STATEABBRV', 'BUILDVALUE', 'POPULATION', 'AGRIVALUE', 'RISK_SCORE', 'SOVI_SCORE', 'RESL_SCORE', 'EAL_VALT']]
 
 NRI_Scatter.rename(columns={'STATEABBRV': 'State',
                     'BUILDVALUE': 'Building Value',
@@ -430,6 +431,7 @@ def scatter_plot(x_value, y_value, y_range):
     fig4 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
                      color='State',
                      size_max=15,
+                     hover_name="COUNTY",
                      labels={
                      x_value:x_description,
                     
@@ -460,6 +462,7 @@ def scatter_plot2(x_value, y_value):
     fig5 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
                      color='State',
                      size_max=15,
+                     hover_name="COUNTY",
                      labels={
                      x_value:x_description,
                     
