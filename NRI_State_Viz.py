@@ -26,9 +26,11 @@ st.title("Comparing Natural Disaster and Climate Risk across California, Florida
 st.subheader('Ellis Obrien')
 
 #Adding text describing issue 
-st.markdown('_Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone, natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks._')
+'Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone, natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks.'
 
-st.markdown('_This dashboard uses NRI data to analyze and visualize climate risk in four states: California, Florida, New York and Texas. These states represent the four most populous states in the country and the four states with over 2 trillion dollars in building value. Additionally, California, Texas, and Florida represent the three states with the highest expected annual loss due to climate change. Analyzing these states allows us to see the risk profile of four distinct regions in the country._')
+'This dashboard uses NRI data to analyze and visualize climate risk in four states: California, Florida, New York and Texas. These states represent the four most populous states in the country and the four states with over 2 trillion dollars in building value. Additionally, California, Texas, and Florida represent the three states with the highest expected annual loss due to climate change. Analyzing these states allows us to see the risk profile of four distinct regions in the country.'
+
+'This tool is intended for federal, state, and local policy makers, who may use it to gain a better understanding of geospatial risk in their state. Additionally, it can be used by perspective property owners seeking to understand the risk to the climate risk associated with their properties.'
 
 
 #imporing json 
@@ -46,7 +48,9 @@ NRI.rename(columns={'STCOFIPS':'FIPS'}, inplace=True)
 ##############################################################################
 #section 1
 ##############################################################################
-st.subheader('Overview of Loss by State and County Risk')
+st.header('Overview of Loss by State and County Risk')
+st.write("This section provides a high level understanding of loss and risk across for each state analyzed.")
+
 
 
 
@@ -66,22 +70,41 @@ nri_plot_1.rename(columns={'EAL_VALB': 'Building Loss',
                          'EAL_VALPE': 'Population Loss'},
                                            inplace=True)
 
+
 fig0 = px.bar(nri_plot_1, x="STATEABBRV", 
              y=['Building Loss', 'Agricultural Loss', 'Population Loss'], 
-             title=("<b>Figure 1: Breakdown of Annual Expected Loss by State </b>"),
              labels={"value": "Annual Estimated Loss ($)", 'STATEABBRV':'State', "variable": "Loss Breakdown"},
              color_discrete_map={"Building Loss": "silver", "Agricultural Loss": "green", 'Population Loss':'black'},
              template="simple_white",
              height=400)
+fig0.update_layout(title_text = '<b>Figure 1: State Level Loss Broken Down by Loss Type </b> <br><sup> California and Texas Lead All States in Loss </sup>')
 #displaying viz
 st.plotly_chart(fig0)
 
 
+st.caption('Buildings are primary driver of loss when dealing with natural disasters. While agricultural loss is not as financially damaging, food systems could be strained as climate change intensifies. In this dataset population is defined as the injury or loss of life from natural disasters converted to dollar terms. It is interesting that California leads in building and agricultural loss, but Texas has the largest population loss by a significant margin.')
 
-State_Name1=st.selectbox(label="Select state to View",
+
+st.text("")
+
+st.text("")
+
+st.text("")
+
+st.text("")
+
+st.subheader('Maps of Loss and Risk')
+st.write('Select a state from the drop down below to view county level loss and risk maps for the state you select.') 
+
+State_Name1=st.selectbox(label="Select State to View",
 options=('CA', 'FL', 'NY', 'TX' ))
 
+st.write('Figure 2 below shows annual expected loss by county, while figure 3 shows the composite risk score. You can hover over the counties on the map to see the specific loss/risk for the given county.')
 title_text = "**" + State_Name1 + "**"
+
+st.text("")
+
+st.text("")
 
 
 
@@ -107,7 +130,7 @@ elif State_Name1 == 'TX':
     x=31.35394
     y=-99.25277
     Map_Range2=(0,50000000)
-    zoom=4
+    zoom=4.5
 
 
 NRI_MAP1=NRI[NRI.STATEABBRV == State_Name1]
@@ -129,6 +152,8 @@ def county_map_1(input_var, map_leg, z, input_desc):
 
 #writing map title 
 st.write('**Figure 2: Annual Expected Loss by County for**', title_text)
+st.caption('Highly Populated Coastal Areas Tend to Have the Highest Expected Losses')
+
 
 #Enter Variables to Map here 
 variable_to_map_NRI2='EAL_VALT'
@@ -138,11 +163,18 @@ NRI_description2='Annual Expected Loss'
 
 county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 
-st.write('_Please note that the loss range changes for each state so that higher and lower loss counties can be differentiated between within a state._')
+st.caption('Losses are heavily influenced by two factors peril frequency/intensity and population. It is important to remember that population is highly correlated with loss since their tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade and Los Angeles county are high risk regions the reason they have such high losses is due to population. Still, it is important for policy makers to review total loss numbers because this where a significant portion of climate resources will need to be allocated.')
 
+st.caption('_*Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
+
+st.text("")
+
+st.text("")
+
+st.text("")
 
 st.write('**Figure 3: Composite Risk Score by County for**', title_text)
-st.write('_Risk Score takes into account disaster threat, infrastructure, and building value to assign a risk rating to each county_')
+st.caption('_Risk Score Takes Into Account Composite Risk From All Perils_')
 
 #Enter Variables to Map here 
 variable_to_map_NRI1='RISK_SCORE'
@@ -154,13 +186,25 @@ Map_Range1=(0,50)
 #running mapping function
 county_map_1(variable_to_map_NRI1, Map_Range1, zoom, NRI_description1)
 
+st.caption('Risk Score takes into account risk from all 18 Perils in the risk index, as well as social vulnerability and community relience. While it is still highly correlated with expected loss in this map we start to see more rural, less populated areas with higher risk scores relative to their expected loss.')
+
+
 #writing map title 2
 
 ##############################################################################
 #section 2
 ##############################################################################
-st.subheader('Analysis of Peril Specific Loss by State ')
+st.text("")
 
+st.text("")
+
+st.text("")
+
+st.header('Analysis of Peril Specific Loss by State ')
+st.write('While section one was intended to provide a high level overview of climate risk, this section breaks down which perils specifically threaten selected states.')
+
+
+st.write('Select a state from the dropdown below to see which perils drive losses in the state.')
 State_Name2=st.selectbox(label="Select State",
 options=('CA', 'FL', 'NY', 'TX' ))
 
@@ -247,16 +291,23 @@ fig2 = px.bar(NRI_Map3, x='index', y='Expected Annual Loss',
                  labels={"index": "<b> Peril </b>", 'Expected Annual Loss': '<b>Expected Annual Loss ($)</b>' },
                 template="simple_white"
             )
+fig2.update_layout(title_text = '<b>Figure 4: Loss by Peril For Selected State </b> <br><sup> Risk Profiles are Very Different Across States </sup>')
 fig2.update_traces(marker_color='DarkRed')
 
-
-#displaying viz 
-st.write('**Figure 4: Loss by Peril for**', title_text2)
-
-
 st.plotly_chart(fig2)
+st.caption('Earthquake is the leading cause of loss in California, inland flooding is the leading cause of loss in New York, hurricane is the leading cause of loss in Texas and Florida. Different regions, climates, and geographies contrinbute to very different dominant perils across states.')
 
-drop_down=NRI_Map3['index']
+st.text("")
+
+st.text("")
+
+st.text("")
+
+st.text("")
+
+st.text("")
+st.subheader('Map of Peril Specific Losses')
+st.write('Select a peril from the dropdown below to see the perils county level losses for your selected state. You can also adjust the slider below to alter the map range to see more or less differentiation betwen counties.')
 
 variable1=st.selectbox(label="Peril to View",
 options=('Coastal Flooding',
@@ -298,7 +349,7 @@ elif State_Name2 == 'NY':
 elif State_Name2 == 'TX':
     x2=31.35394
     y2=-99.25277
-    zoom=4
+    zoom=4.5
 
 def county_map_2(input_var, map_leg, z):
     fig3 = px.choropleth_mapbox(NRI_Map2, geojson=county, locations='FIPS', color=input_var,
@@ -326,9 +377,10 @@ Map_Range3 = st.slider(
     'Edit Map Range',
     0.0, pyup5, pyup5, step = 10000.0)
 
-st.write('**Figure 5: County Level Loss**', title_text3, '**for**', title_text2)
+st.write('**Figure 5: County Level**', title_text3, '**Expected Loss for**', title_text2)
 
 county_map_2(variable1, (0, Map_Range3 ), zoom)
+st.caption('Most states are only threatened by a few perils with virtually no risk from other types of disasters. For example, while California has the highest annual expected loss in the country it has virtually no hurricane risk due to cold waters in the Pacific Ocean.')
 
 ##############################################################################
 #section 3
@@ -358,6 +410,9 @@ y_value=st.selectbox(label="Select Variable",
 options=("Building Value",
 'Population',
 'Agricultural Value'))
+
+NRI_Scatter["Population"] = NRI_Scatter["Population"].astype(float)
+NRI_Scatter["Agricultural Value"] = NRI_Scatter["Agricultural Value"].astype(float)
 
 
 upper_bound_draft5=NRI_Scatter[[y_value]].max()
