@@ -128,7 +128,7 @@ def county_map_1(input_var, map_leg, z, input_desc):
 
 
 #writing map title 
-st.write('**Figure 2: Annual Expected Loss for**', title_text, "**, by County**")
+st.write('**Figure 2: Annual Expected Loss by County for**', title_text)
 
 #Enter Variables to Map here 
 variable_to_map_NRI2='EAL_VALT'
@@ -141,7 +141,7 @@ county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 st.write('_Please note that the loss range changes for each state so that higher and lower loss counties can be differentiated between within a state._')
 
 
-st.write('**Figure 3: Composite Risk Score for**', title_text, "**, by county**")
+st.write('**Figure 3: Composite Risk Score by County for**', title_text)
 st.write('_Risk Score takes into account disaster threat, infrastructure, and building value to assign a risk rating to each county_')
 
 #Enter Variables to Map here 
@@ -259,7 +259,21 @@ st.plotly_chart(fig2)
 drop_down=NRI_Map3['index']
 
 variable1=st.selectbox(label="Peril to View",
-options=(drop_down))
+options=('Coastal Flooding',
+                   'Cold Wave',
+                   'Drought',
+                   'Earthquake',
+                   'Hail',
+                   'Ice Storm',
+                   'Heat Wave',
+                   'Hurricane',
+                   'Lightning',
+                   'Landslide',
+                   'Riverine Flooding',
+                   'Strong Wind',
+                   'Tornado',
+                   'Wildfire',
+                   'Winter Weather'))
 
 title_text3 = "**" + variable1 + "**"
 
