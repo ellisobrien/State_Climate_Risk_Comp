@@ -301,7 +301,7 @@ elif State_Name2 == 'TX':
     zoom=4
 
 def county_map_2(input_var, map_leg, z):
-    fig2 = px.choropleth_mapbox(NRI_Map2, geojson=county, locations='FIPS', color=input_var,
+    fig3 = px.choropleth_mapbox(NRI_Map2, geojson=county, locations='FIPS', color=input_var,
                                    color_continuous_scale="balance",
                                    range_color=map_leg,
                                    mapbox_style="carto-positron",
@@ -309,8 +309,8 @@ def county_map_2(input_var, map_leg, z):
                                    opacity=0.7,
                                    labels={'STCOFIPS':'FIPS'}
                                   )
-    fig2.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, geo_scope='usa')
-    st.plotly_chart(fig2)
+    fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, geo_scope='usa')
+    st.plotly_chart(fig3)
 
 
 
@@ -335,49 +335,84 @@ county_map_2(variable1, (0, Map_Range3 ), zoom)
 ##############################################################################
 st.subheader('County Level Correlations with Loss')
 
-st.write("Select States to View in Scatter Plot")
+NRI_Scatter=NRI[['STATEABBRV', 'BUILDVALUE', 'POPULATION', 'AGRIVALUE', 'RISK_SCORE', 'SOVI_SCORE', 'RESL_SCORE', 'EAL_VALT']]
 
+NRI_Scatter.rename(columns={'STATEABBRV': 'State',
+                    'BUILDVALUE': 'Building Value',
+                   'POPULATION': 'Population',
+                   'AGRIVALUE': 'Agricultural Value',
+                   'RISK_SCORE': 'Risk Score',
+                   'SOVI_SCORE': 'Social Vulnerability',
+                   'RESL_SCORE': 'Community Resilience',
+                   'EAL_VALT': 'Expected Annual Loss'
+                  },    inplace=True) 
 
 
 #Enter X variable and Description 
-x_value='EAL_VALT'
+x_value='Expected Annual Loss'
 x_description='<b>Annual Expected Loss by County</b>'
 
+st.write('**Examining Relationship Between Loss and Exposure**')
 #Enter Y Variable and Description
 y_value=st.selectbox(label="Select Variable",
-options=('BUILDVALUE', 'POPULATION', 'AGRIVALUE', 'RISK_SCORE', 'SOVI_SCORE' ))
+options=("Building Value",
+'Population',
+'Agricultural Value'))
 
 
-upper_bound_draft5=NRI[[y_value]].max()
+upper_bound_draft5=NRI_Scatter[[y_value]].max()
 up5=upper_bound_draft5[0]
 
 pyup5 = up5.item()
 
-
 Map_Range4 = st.slider(
-    'Edit Map Range',
-    0.0, pyup5, pyup5, step = 100000.0)
+    'Edit Y Axis',
+    0.0, pyup5, pyup5*.5, step = 100000.0)
 
 #data pre-processing 
 #defining function 
 def scatter_plot(x_value, y_value, y_range):
-    fig4 = px.scatter(NRI, x=x_value, y=y_value,
-                  #   size="POPULATION",
-                     color='STATEABBRV',
+    fig4 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
+                     color='State',
                      size_max=15,
                      labels={
                      x_value:x_description,
                     
                  },  template="simple_white")
-    fig4.update_layout(transition_duration=500,  xaxis_range=[0, 100000000], yaxis_range=y_range)
+    fig4.update_layout(transition_duration=500,  xaxis_range=[0, 250000000], yaxis_range=y_range)
     st.plotly_chart(fig4)    
 
 
-st.write('**Figure 6: Relationship between Expected Loss and Key Variables**')
+st.write('**Figure 6: Relationship between Expected Loss and Exposure**')
 
 #running function 
 scatter_plot(x_value, y_value, (0, Map_Range4))
 
+
+
+st.write('**Examining Relationship Between Loss and Risk Metrics**')
+
+y_value2=st.selectbox(label="Select Risk Variable",
+options=('Risk Score',
+'Social Vulnerability',
+'Community Resilience'))
+
+st.write('**Figure 7: Relationship between Expected Loss and Exposure**')
+
+#data pre-processing 
+#defining function 
+def scatter_plot2(x_value, y_value):
+    fig5 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
+                     color='State',
+                     size_max=15,
+                     labels={
+                     x_value:x_description,
+                    
+                 },  template="simple_white")
+    fig5.update_layout(transition_duration=500,  xaxis_range=[0, 250000000])
+    st.plotly_chart(fig5)
+
+scatter_plot2(x_value, y_value2)
 
 
 
