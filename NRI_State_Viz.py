@@ -159,7 +159,7 @@ NRI_description2='Annual Expected Loss'
 
 county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 
-st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. Population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade County and Los Angeles County are not inherently higher risk than their neighboring counties, but their losses are much higher due to population. It is important for policy makers to review state total loss numbers because this where a significant portion of climate resources will need to be allocated.')
+st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. Population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade County and Los Angeles County are not inherently higher risk than their neighboring counties, their losses are much higher due to population.')
 
 st.caption('_Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
 
@@ -395,7 +395,7 @@ st.text("")
 ##############################################################################
 st.subheader('County Level Correlations with Loss')
 
-st.write("This section provides an overview of the correlations between expected loss and key exposure and risk metrics. Exposure (i.e building value, population) and risk (i.e. risk score and social vulnerability) are what dictate losses so it is interesting to see corelations between loss and these factors. Each dot on the below charts represent a county colored by the state the county falls in. While it may be hard to see low loss counties on these graphs, this section is useful for indentifying high risk/high loss outliers.")
+st.write("This section provides an overview of the correlations between expected loss and key exposure and risk metrics. Exposure (i.e., building value, population) and risk (i.e., risk score and social vulnerability) dictate losses so it is useful to see corelations between loss and each of these factors. Each point on the below charts represents a county. It is perhaps less useful to examine low loss counties on these graphs but they are useful for indentifying high risk/high loss outliers.")
 
 st.text("")
 
@@ -515,11 +515,11 @@ def scatter_plot2(x_value, y_value, map_range):
 
 scatter_plot2(x_value2, y_value2, (0, Map_Range6))
 
-st.caption('According to FEMA Risk Scoare and social vulnerability should be highly correlated with loss, while community resilience should be negativley correlated with loss. We see a strong positive correlation between risk and loss, but the relation between vulnerability and resilience is weaker.')
+st.caption('According to FEMA, risk score and social vulnerability should be highly correlated with loss, while community resilience should be negativley correlated with loss. This chart shows a strong positive correlation between risk and loss, but the relationship between vulnerability and resilience is weaker.')
 
 
 #Adding in authors name 
-st.markdown('_For use and support contact Ellis Obrien: eso18@georgetown.edu_')
+st.markdown('_For questions and support contact Ellis Obrien: eso18@georgetown.edu_')
 
 
 
