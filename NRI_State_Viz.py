@@ -26,7 +26,7 @@ st.title("Comparing Natural Disaster and Climate Risk across California, Florida
 st.subheader('Ellis Obrien')
 
 #Adding text describing issue 
-st.markdown('_Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks._')
+st.markdown('_Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone, natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks._')
 
 st.markdown('_This dashboard uses NRI data to analyze and visualize climate risk in four states: California, Florida, New York and Texas. These states represent the four most populous states in the country and the four states with over 2 trillion dollars in building value. Additionally, California, Texas, and Florida represent the three states with the highest expected annual loss due to climate change. Analyzing these states allows us to see the risk profile of four distinct regions in the country._')
 
@@ -40,10 +40,43 @@ NRI=pd.read_csv('https://raw.githubusercontent.com/ellisobrien/State_Climate_Ris
 
 NRI.rename(columns={'STCOFIPS':'FIPS'}, inplace=True)
 
+
+
+
 ##############################################################################
 #section 1
 ##############################################################################
-st.subheader('Overview of County Risk and Loss by State')
+st.subheader('Overview of Loss by State and County Risk')
+
+
+
+nri_plot_1=NRI[['STATEABBRV', 'EAL_VALB', "EAL_VALA", "EAL_VALPE"]]
+nri_plot_1=nri_plot_1.groupby('STATEABBRV').sum()
+
+
+nri_plot_1.reset_index(inplace=True)
+
+nri_plot_1=nri_plot_1.sort_values(by=['EAL_VALB'], ascending=False)
+
+
+
+
+nri_plot_1.rename(columns={'EAL_VALB': 'Building Loss',
+                         'EAL_VALA': 'Agricultural Loss',
+                         'EAL_VALPE': 'Population Loss'},
+                                           inplace=True)
+
+fig0 = px.bar(nri_plot_1, x="STATEABBRV", 
+             y=['Building Loss', 'Agricultural Loss', 'Population Loss'], 
+             title=("<b>Figure 1: Breakdown of Annual Expected Loss by State </b>"),
+             labels={"value": "Annual Estimated Loss ($)", 'STATEABBRV':'State', "variable": "Loss Breakdown"},
+             color_discrete_map={"Building Loss": "silver", "Agricultural Loss": "green", 'Population Loss':'black'},
+             template="simple_white",
+             height=400)
+#displaying viz
+st.plotly_chart(fig0)
+
+
 
 State_Name1=st.selectbox(label="Select state to View",
 options=('CA', 'FL', 'NY', 'TX' ))
@@ -56,7 +89,7 @@ if State_Name1 == 'CA':
     x=38.1063
     y=-120.7367
     Map_Range2=(0,500000000)
-    zoom=4
+    zoom=4.5
     
 elif State_Name1 == 'FL':
     x= 28.9331
@@ -95,7 +128,20 @@ def county_map_1(input_var, map_leg, z, input_desc):
 
 
 #writing map title 
-st.write('**Figure 1: FEMA Composite Risk Score by County for**', title_text)
+st.write('**Figure 2: Annual Expected Loss for**', title_text, "**, by County**")
+
+#Enter Variables to Map here 
+variable_to_map_NRI2='EAL_VALT'
+
+#Enter Variable Description 
+NRI_description2='Annual Expected Loss'
+
+county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
+
+st.write('_Please note that the loss range changes for each state so that higher and lower loss counties can be differentiated between within a state._')
+
+
+st.write('**Figure 3: Composite Risk Score for**', title_text, "**, by county**")
 st.write('_Risk Score takes into account disaster threat, infrastructure, and building value to assign a risk rating to each county_')
 
 #Enter Variables to Map here 
@@ -109,17 +155,6 @@ Map_Range1=(0,50)
 county_map_1(variable_to_map_NRI1, Map_Range1, zoom, NRI_description1)
 
 #writing map title 2
-st.write('**Figure 2: Annual Expected County Level Loss for**', title_text)
-
-#Enter Variables to Map here 
-variable_to_map_NRI2='EAL_VALT'
-
-#Enter Variable Description 
-NRI_description2='Annual Expected Loss'
-
-county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
-
-st.write('_Please note that the loss range changes for each state so that higher and lower loss counties can be differentiated between within a state._')
 
 ##############################################################################
 #section 2
@@ -216,7 +251,7 @@ fig2.update_traces(marker_color='DarkRed')
 
 
 #displaying viz 
-st.write('**Figure 3: Loss by Peril for**', title_text2)
+st.write('**Figure 4: Loss by Peril for**', title_text2)
 
 
 st.plotly_chart(fig2)
@@ -234,7 +269,7 @@ title_text3 = "**" + variable1 + "**"
 if State_Name2 == 'CA':
     x2=38.1063
     y2=-120.7367
-    zoom=4
+    zoom=4.5
     
 elif State_Name2 == 'FL':
     x2= 28.9331
@@ -255,7 +290,7 @@ def county_map_2(input_var, map_leg, z):
     fig2 = px.choropleth_mapbox(NRI_Map2, geojson=county, locations='FIPS', color=input_var,
                                    color_continuous_scale="balance",
                                    range_color=map_leg,
-                                   mapbox_style="white-bg",
+                                   mapbox_style="carto-positron",
                                    zoom=z, center = {"lat": x2, "lon": y2},
                                    opacity=0.7,
                                    labels={'STCOFIPS':'FIPS'}
@@ -277,7 +312,7 @@ Map_Range3 = st.slider(
     'Edit Map Range',
     0.0, pyup5, pyup5, step = 10000.0)
 
-st.write('**Figure 4: County Level Loss**', title_text3, '**for**', title_text2)
+st.write('**Figure 5: County Level Loss**', title_text3, '**for**', title_text2)
 
 county_map_2(variable1, (0, Map_Range3 ), zoom)
 
@@ -309,8 +344,6 @@ Map_Range4 = st.slider(
     'Edit Map Range',
     0.0, pyup5, pyup5, step = 100000.0)
 
-pyup5
-
 #data pre-processing 
 #defining function 
 def scatter_plot(x_value, y_value, y_range):
@@ -326,7 +359,8 @@ def scatter_plot(x_value, y_value, y_range):
     st.plotly_chart(fig4)    
 
 
-    
+st.write('**Figure 6: Relationship between Expected Loss and Key Variables**')
+
 #running function 
 scatter_plot(x_value, y_value, (0, Map_Range4))
 
