@@ -20,7 +20,7 @@ import plotly
 import streamlit as st
 
 #Writing dashboard title 
-st.title("Evaluating Natural Disaster and Climate Risk in California, Florida, Texas, and New York")
+st.title("Evaluating Natural Disaster and Climate Risk in California, Florida, New York, and Texas")
 
 #Adding text describing issue 
 st.write('Natural disasters present a fundamental risk to housing and economic security in the U.S. In 2021 alone natural disasters cost the U.S $145 Billion. In an effort to improve data surrounding natural disasters, the Federal Emergency Management Agency released the National Risk Index (NRI) which provides comprehensive county level data on natural disaster risks.')
@@ -94,7 +94,7 @@ st.write('Select a state from the drop down below to view county level loss and 
 State_Name1=st.selectbox(label="Select State to View",
 options=('CA', 'FL', 'NY', 'TX' ))
 
-st.write('Figure 2 below shows annual expected loss by county, while figure 3 shows the composite risk score. Hover your cursor over the counties on the map to see the specific loss/risk for the given county.')
+st.write('Figure 2 shows annual expected loss by county for the state you select. Figure 3 shows the composite risk score (composite risk score is described below figure 3). Hover your cursor over a county on the map to see the specific loss/risk for that county. Hover information in figure 2 also shows vulnerability and reslience ratings as provided by FEMA. Descriptions and definitions of loss, risk, vulnerability, and reslience can be accessed from this webpage: https://hazards.fema.gov/nri/')
 title_text = "**" + State_Name1 + "**"
 
 st.text("")
@@ -159,9 +159,9 @@ NRI_description2='Annual Expected Loss'
 
 county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 
-st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. It is important to remember that population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade and Los Angeles county are high risk regions, the reason they have such high losses is due to population. It is important for policy makers to review state total loss numbers because this where a significant portion of climate resources will need to be allocated.')
+st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. Population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade County and Los Angeles County are not inherently higher risk than their neighboring counties, but their losses are much higher due to population. It is important for policy makers to review state total loss numbers because this where a significant portion of climate resources will need to be allocated.')
 
-st.caption('_*Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
+st.caption('_Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
 
 st.text("")
 
@@ -447,7 +447,7 @@ up6=upper_bound_draft6[0]
 pyup6 = up6.item()
 
 Map_Range5 = st.slider(
-    'Edit X-Axis, Expected Loss ($)',
+    'Edit X-Axis, Expected Loss',
     0.0, pyup6, pyup6*.2, step = 100000.0)
 
 #data pre-processing 
@@ -494,7 +494,7 @@ up7=upper_bound_draft7[0]
 pyup7 = up7.item()
 
 Map_Range6 = st.slider(
-    'Edit X-Axis, Expected Loss ($)',
+    'Edit X-Axis, Expected Loss',
     0.0, pyup7, pyup7*.2, step = 100000.00, key=9)
 
 
