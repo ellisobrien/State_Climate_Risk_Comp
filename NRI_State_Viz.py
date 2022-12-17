@@ -37,6 +37,7 @@ with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-c
 #importing data from github
 NRI=pd.read_csv('https://raw.githubusercontent.com/ellisobrien/State_Climate_Risk_Comp/main/NRI_State_Dat.csv', dtype={"STCOFIPS": str})
 
+#renaming county fips code
 NRI.rename(columns={'STCOFIPS':'FIPS'}, inplace=True)
 
 
@@ -45,27 +46,33 @@ NRI.rename(columns={'STCOFIPS':'FIPS'}, inplace=True)
 ##############################################################################
 #section 1
 ##############################################################################
+#section header
 st.header('Overview of Loss by State and County Risk')
+
+#section desrciption
 st.write("This section provides a high level understanding of loss and risk for each state analyzed.")
 
 
 
-
+#selecting key states for scatter plot
 nri_plot_1=NRI[['STATEABBRV', 'EAL_VALB', "EAL_VALA", "EAL_VALPE"]]
+
+#summinng features
 nri_plot_1=nri_plot_1.groupby('STATEABBRV').sum()
 
-
+#making state a coumumn
 nri_plot_1.reset_index(inplace=True)
 
+#sorting data for plot
 nri_plot_1=nri_plot_1.sort_values(by=['EAL_VALB'], ascending=False)
 
-
+#renaming columns
 nri_plot_1.rename(columns={'EAL_VALB': 'Building Loss',
                          'EAL_VALA': 'Agricultural Loss',
                          'EAL_VALPE': 'Population Loss'},
                                            inplace=True)
 
-
+#making bar graph
 fig0 = px.bar(nri_plot_1, x="STATEABBRV", 
              y=['Building Loss', 'Agricultural Loss', 'Population Loss'], 
              labels={"value": "Annual Estimated Loss ($)", 'STATEABBRV':'State', "variable": "Loss Breakdown"},
@@ -73,13 +80,14 @@ fig0 = px.bar(nri_plot_1, x="STATEABBRV",
              template="simple_white",
              height=400)
 fig0.update_layout(title_text = '<b>Figure 1: State Level Loss Broken Down by Loss Type </b> <br><sup> California and Texas Lead All States in Loss </sup>')
+
 #displaying viz
 st.plotly_chart(fig0)
 
-
+#adding cpation
 st.caption('Buildings are the primary driver of loss from natural disasters. While agricultural loss is not as financially damaging, food systems could be strained as climate change intensifies. In this dataset population is defined as the injury or loss of life from natural disasters converted to dollar terms. It is interesting that California leads in building and agricultural loss, but Texas has the largest population loss by a significant margin.')
 
-
+#adding space
 st.text("")
 
 st.text("")
@@ -88,21 +96,27 @@ st.text("")
 
 st.text("")
 
+#Adding header
 st.subheader('Maps of Loss and Risk')
-st.write('Select a state from the drop down below to view county level loss and risk maps for the state you select.') 
 
+#Providng context
+st.write('Select a state from the drop down below to view county level loss and risk maps for the state you select.') 
+ 
+#initiating dropdown
 State_Name1=st.selectbox(label="Select State to View",
 options=('CA', 'FL', 'NY', 'TX' ))
 
+#writing text
 st.write('Figure 2 shows annual expected loss by county for the state you select. Figure 3 shows the composite risk score (composite risk score is described below figure 3). Hover your cursor over a county on the map to see the specific loss/risk for that county. Hover information in figure 2 also shows vulnerability and reslience ratings as provided by FEMA. Descriptions and definitions of loss, risk, vulnerability, and reslience can be accessed from this webpage: https://hazards.fema.gov/nri/')
 title_text = "**" + State_Name1 + "**"
 
+#spacing
 st.text("")
 
 st.text("")
 
 
-
+#setting zoom and map range based on state name 
 if State_Name1 == 'CA':
     x=38.1063
     y=-120.7367
@@ -128,6 +142,7 @@ elif State_Name1 == 'TX':
     zoom=4.5
 
 
+#filtering based on state name
 NRI_MAP1=NRI[NRI.STATEABBRV == State_Name1]
 
 
@@ -157,18 +172,22 @@ variable_to_map_NRI2='EAL_VALT'
 #Enter Variable Description 
 NRI_description2='Annual Expected Loss'
 
+#running function 
 county_map_1(variable_to_map_NRI2, Map_Range2, zoom, NRI_description2)
 
+#writing caption
 st.caption('Losses are heavily influenced by two factors: peril frequency/intensity and population. Population is highly correlated with loss since there tends to be more infrastructure and exposure in highly populated areas. For example, while Miami-Dade County and Los Angeles County are not inherently higher risk than their neighboring counties, their losses are much higher due to population.')
 
 st.caption('_Please note that the loss range changes for each state in the above figure so that higher and lower loss counties can be differentiated between within a state._')
 
+#spacing format
 st.text("")
 
 st.text("")
 
 st.text("")
 
+#title and caption for figure 3
 st.write('**Figure 3: Composite Risk Score by County for**', title_text)
 st.caption('_Risk Score Takes Into Account Composite Risk From All Perils_')
 
@@ -178,6 +197,7 @@ variable_to_map_NRI1='RISK_SCORE'
 #Enter Variable Description 
 NRI_description1='Composite Risk Score'
 
+#setting map range 
 Map_Range1=(0,50)
 #running mapping function
 county_map_1(variable_to_map_NRI1, Map_Range1, zoom, NRI_description1)
@@ -190,29 +210,41 @@ st.caption('Risk Score takes into account risk from all 18 Perils in the risk in
 ##############################################################################
 #section 2
 ##############################################################################
+
+#spacing
 st.text("")
 
 st.text("")
 
 st.text("")
 
+#writing section hearder
 st.header('Analysis of Peril-Specific Loss by State ')
 st.write('Section one was intended to provide a high level overview of climate risk. This section identifies the primary perils for each state.')
 
+#spacing 
 st.text("")
 
 st.text("")
 
+
+#dropdown directions
 st.write('Select a state from the dropdown below to see which perils drive losses in the state.')
+
+#setting drop down menu
 State_Name2=st.selectbox(label="Select State",
 options=('CA', 'FL', 'NY', 'TX' ))
 
+#formatting state name for title
 title_text2 = "**" + State_Name2 + "**"
 
+#filtering text based on state name
 NRI_Map2=NRI[NRI.STATEABBRV == State_Name2]
 
+#filling NA
 NRI_Map2 = NRI_Map2.fillna(0)
 
+#selecting columns for map
 NRI_Map2=NRI_Map2[['FIPS', 'COUNTY', 'AVLN_EALT',
 'CFLD_EALT',
 'CWAV_EALT',
@@ -232,6 +264,7 @@ NRI_Map2=NRI_Map2[['FIPS', 'COUNTY', 'AVLN_EALT',
 'VLCN_EALT',
 'WNTW_EALT']]
 
+#renaming columns 
 NRI_Map2.rename(columns={'AVLN_EALT': 'Avalanche',
                    'CFLD_EALT': 'Coastal Flooding',
                    'CWAV_EALT': 'Cold Wave',
@@ -254,7 +287,7 @@ NRI_Map2.rename(columns={'AVLN_EALT': 'Avalanche',
                     
                   },    inplace=True) 
 
-
+#setting new map
 NRI_Map3=NRI_Map2[['Avalanche',
                    'Coastal Flooding',
                    'Cold Wave',
@@ -274,18 +307,21 @@ NRI_Map3=NRI_Map2[['Avalanche',
                    "Volcanic Activity",
                    'Winter Weather']]
 
+#summing values
 NRI_Map3=NRI_Map3.sum()
+#converting to data frame
 NRI_Map3=NRI_Map3.to_frame() 
+#renaming columns 
 NRI_Map3.reset_index(inplace=True)
 NRI_Map3.rename(columns={0: 'Expected Annual Loss'},
           inplace=True)
 
 
-
+#SORTING for bar graph
 NRI_Map3=NRI_Map3.sort_values(by=['Expected Annual Loss'], ascending=False)
 
 
-
+#making bargraph
 fig2 = px.bar(NRI_Map3, x='index', y='Expected Annual Loss',
                  labels={"index": "<b> Peril </b>", 'Expected Annual Loss': '<b>Expected Annual Loss ($)</b>' },
                 template="simple_white"
@@ -293,9 +329,12 @@ fig2 = px.bar(NRI_Map3, x='index', y='Expected Annual Loss',
 fig2.update_layout(title_text = '<b>Figure 4: Loss by Peril For Selected State </b> <br><sup> Risk Profiles are Very Different Across States </sup>')
 fig2.update_traces(marker_color='DarkRed')
 
+#displaying bargraph
 st.plotly_chart(fig2)
+#displaying caption
 st.caption('Earthquake is the leading cause of loss in California, inland flooding is the leading cause of loss in New York, hurricane is the leading cause of loss in Texas and Florida. Different regions, climates, and geographies contrinbute to very different dominant perils across states.')
 
+#spacing
 st.text("")
 
 st.text("")
@@ -305,9 +344,12 @@ st.text("")
 st.text("")
 
 st.text("")
+#Section subheader
 st.subheader('Map of Peril Specific Losses')
+#directions
 st.write('Select a peril from the dropdown below to see the perils county level losses for your selected state. You can also adjust the slider below to alter the map range to see more or less differentiation betwen counties.')
 
+#map dropdown
 variable1=st.selectbox(label="Peril to View",
 options=('Coastal Flooding',
                    'Cold Wave',
@@ -325,11 +367,12 @@ options=('Coastal Flooding',
                    'Wildfire',
                    'Winter Weather'))
 
+#formatting title text 
 title_text3 = "**" + variable1 + "**"
 
 
 
-
+#setting zoom and postion based on state selection
 if State_Name2 == 'CA':
     x2=38.1063
     y2=-120.7367
@@ -350,6 +393,7 @@ elif State_Name2 == 'TX':
     y2=-99.25277
     zoom=4.5
 
+#defining mapping function
 def county_map_2(input_var, map_leg, z):
     fig3 = px.choropleth_mapbox(NRI_Map2, geojson=county, locations='FIPS', color=input_var,
                                    color_continuous_scale="balance",
@@ -361,21 +405,20 @@ def county_map_2(input_var, map_leg, z):
                                    labels={'STCOFIPS':'FIPS'}
                                   )
     fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, geo_scope='usa')
+    #showing fiugre 
     st.plotly_chart(fig3)
 
 
-
+#set
 upper_bound_draft4=NRI_Map2[[variable1]].max()
 up4=upper_bound_draft4[0]
-
 pyup4 = up4.item()
 
-pyup5=pyup4
 
-
+#setting 
 Map_Range3 = st.slider(
     'Edit Map Range (Map range values are in Dollars)',
-    0.0, pyup5, pyup5, step = 10000.0)
+    0.0, pyup4, pyup4, step = 10000.0)
 
 st.write('**Figure 5: County Level**', title_text3, '**Expected Loss for**', title_text2)
 st.caption('Geographic Region Determine Peril Vulnerability by State')
@@ -393,7 +436,7 @@ st.text("")
 ##############################################################################
 #section 3
 ##############################################################################
-st.subheader('County Level Correlations with Loss')
+st.header('County Level Correlations with Loss')
 
 st.write("This section provides an overview of the correlations between expected loss and key exposure and risk metrics. Exposure (i.e., building value, population) and risk (i.e., risk score and social vulnerability) dictate losses so it is useful to see corelations between loss and each of these factors. Each point on the below charts represents a county. It is perhaps less useful to examine low loss counties on these graphs but they are useful for indentifying high risk/high loss outliers.")
 
@@ -420,6 +463,7 @@ NRI_Scatter.rename(columns={'STATEABBRV': 'State',
 x_value='Expected Annual Loss'
 x_description='Annual Expected Loss by County ($)'
 
+#settingsection 
 st.write('**Examining Relationship Between Loss and Exposure**')
 st.write('Select an exposure metric from the drop down below to see how it is correlated with loss. Additionally, you can adjust the slider to alter the y or x axis. The slider slides from the minimum and maximum possible value for each axis.')
 #Enter Y Variable and Description
@@ -428,29 +472,32 @@ options=("Building Value ($)",
 'Population',
 'Agricultural Value ($)'))
 
+
+#converting values to floats
 NRI_Scatter["Population"] = NRI_Scatter["Population"].astype(float)
 NRI_Scatter["Agricultural Value ($)"] = NRI_Scatter["Agricultural Value ($)"].astype(float)
 
-
+#setting slider range
 upper_bound_draft5=NRI_Scatter[[y_value]].max()
 up5=upper_bound_draft5[0]
-
 pyup5 = up5.item()
 
+#inputting slideer
 Map_Range4 = st.slider(
     'Edit Y-Axis',
     0.0, pyup5, pyup5*.5, step = 100000.0)
 
+#setting slider range
 upper_bound_draft6=NRI_Scatter[[x_value]].max()
 up6=upper_bound_draft6[0]
-
 pyup6 = up6.item()
 
+#implementing slider
 Map_Range5 = st.slider(
     'Edit X-Axis, Expected Loss',
     0.0, pyup6, pyup6*.2, step = 100000.0)
 
-#data pre-processing 
+
 #defining function 
 def scatter_plot(x_value, y_value, y_range, x_range):
     fig4 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
@@ -469,37 +516,41 @@ def scatter_plot(x_value, y_value, y_range, x_range):
 #running function 
 scatter_plot(x_value, y_value, (0, Map_Range4), (0, Map_Range5))
 
-st.caption('Building Value and Population tend to be highly correlated with loss. But this patter is as strong across all states. In New York for example, there are many high loss high population counties that have low relative loss.')
+#data caption 
+st.caption('Building Value and Population tend to be highly correlated with loss. But this pattern is not as strong across all states. In New York for example, there are many high loss high population counties that have low relative loss.')
+#text spacing 
 st.text("")
 
 st.text("")
 
 st.text("")
 
-
+#setting subheading
 st.write('**Examining Relationship Between Loss and Risk Metrics**')
 st.write('')
+#select box for dropdown 2
 y_value2=st.selectbox(label="Select Risk Variable",
 options=('Risk Score',
 'Social Vulnerability',
 'Community Resilience'))
 
 
-
+#setting x value
 x_value2='Expected Annual Loss'
 
+#setting slider range 
 upper_bound_draft7=NRI_Scatter[[x_value2]].max()
 up7=upper_bound_draft7[0]
 
 pyup7 = up7.item()
 
+#inputting slider 
 Map_Range6 = st.slider(
     'Edit X-Axis, Expected Loss',
     0.0, pyup7, pyup7*.2, step = 100000.00, key=9)
 
 
 
-#data pre-processing 
 #defining function 
 def scatter_plot2(x_value, y_value, map_range):
     fig5 = px.scatter(NRI_Scatter, x=x_value, y=y_value,
@@ -513,12 +564,14 @@ def scatter_plot2(x_value, y_value, map_range):
     fig5.update_layout(title_text = '<b>Figure 7: Relationship between Expected Loss and Exposure </b> <br><sup> Risk and Loss are Highly Correlated </sup>', transition_duration=500,  xaxis_range=map_range)
     st.plotly_chart(fig5)
 
+#running function
 scatter_plot2(x_value2, y_value2, (0, Map_Range6))
 
+#writing caption
 st.caption('According to FEMA, risk score and social vulnerability should be highly correlated with loss, while community resilience should be negativley correlated with loss. This chart shows a strong positive correlation between risk and loss, but the relationship between vulnerability and resilience is weaker.')
 
 
-#Adding in authors name 
+#Adding in authors contact 
 st.markdown('_For questions and support contact Ellis Obrien: eso18@georgetown.edu_')
 
 
