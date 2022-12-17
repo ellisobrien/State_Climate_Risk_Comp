@@ -124,11 +124,11 @@ if State_Name1 == 'CA':
     zoom=4.5
     
 elif State_Name1 == 'FL':
-    x= 28.9331
-    y=-81.87650
+    x= 27.36895
+    y=-82.30029
     Map_Range2=(0,100000000)
     zoom=5
-    
+
 elif State_Name1 == 'NY':
     x= 42.9058
     y=-75.0933
@@ -379,10 +379,11 @@ if State_Name2 == 'CA':
     zoom=4.5
     
 elif State_Name2 == 'FL':
-    x2= 27.353436
-    y2=-81.2867
+    x2= 27.36895
+    y2=-82.30029
     zoom=5
-     
+
+
 elif State_Name2 == 'NY':
     x2= 42.9058
     y2=-75.0933
