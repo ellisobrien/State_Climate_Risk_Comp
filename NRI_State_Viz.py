@@ -419,7 +419,7 @@ pyup4 = up4.item()
 #setting 
 Map_Range3 = st.slider(
     'Edit Map Range (Map range values are in Dollars)',
-    0.0, pyup4, pyup4, step = 10000.0)
+    0.0, pyup4, pyup4*.6, step = 10000.0)
 
 st.write('**Figure 5: County Level**', title_text3, '**Expected Loss for**', title_text2)
 st.caption('Geographic Region Determine Peril Vulnerability by State')
