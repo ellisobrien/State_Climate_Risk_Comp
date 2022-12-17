@@ -379,10 +379,10 @@ if State_Name2 == 'CA':
     zoom=4.5
     
 elif State_Name2 == 'FL':
-    x2= 28.9331
-    y2=-81.87650
+    x2= 27.353436
+    y2=-81.2867
     zoom=5
-    
+     
 elif State_Name2 == 'NY':
     x2= 42.9058
     y2=-75.0933
